@@ -1,0 +1,13 @@
+.tile {
+    width: 100px;
+    height:100px;
+    font-size: 50px;
+    text-align: center;
+    border-color: gray;
+}
+
+.game {
+    margin:auto;
+    margin-top: 50px;
+    max-width:375px;
+}
