@@ -15,6 +15,15 @@ function draw(board) {
 }
 
 function main() {
+    let socket = io();
+
+    socket.emit("join");
+
+    socket.on("moved", data => {
+        console.log(data);
+        draw(data["board"]);
+    });
+
     let tiles = document.querySelectorAll(".tile");
 
     tiles.forEach((tile, i) => {
@@ -22,15 +31,7 @@ function main() {
         let y = Math.floor(i / 3);
 
         tile.addEventListener("click", function(event) {
-            fetch(`/api/move?x=${x}&y=${y}`)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    console.log(json);
-                    draw(json.board);
-                });
-
+            socket.emit("move", {"x": x, "y": y});
         });
 
         tile.addEventListener("mouseover", function(event) {
@@ -43,16 +44,6 @@ function main() {
             this.style.color = "black";
         });
     });
-
-    setInterval(() => {
-        fetch("/api/status")
-            .then((response) => {
-                return response.json();
-            })
-            .then((json) => {
-                draw(json.board);
-            });
-    }, 1000);
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {

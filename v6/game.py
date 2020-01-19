@@ -42,6 +42,7 @@ def set_tile(game, player, x, y):
 
     # It's not your turn
     if game["players"][0 if game["turn"] else 1] != player:
+        print(game["players"], player)
         return False
 
     # Fill tile
@@ -49,4 +50,3 @@ def set_tile(game, player, x, y):
     game["turn"] = not game["turn"];
 
     return True
-

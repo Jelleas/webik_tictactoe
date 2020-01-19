@@ -41,11 +41,13 @@ socketio = SocketIO(app, ping_interval=4, ping_timeout=10)
 @app.route("/")
 def index():
     """Play tictactoe"""
-    player = request.sid
-
-    join_game(player)
-
     return render_template("index.html")
+
+
+@socketio.on("join")
+def join():
+    player = request.sid
+    join_game(player)
 
 
 @socketio.on("move")
@@ -53,12 +55,12 @@ def move(data):
     x = int(data["x"])
     y = int(data["y"])
 
-    player = session.sid
+    player = request.sid
     game = get_game(player)
 
     set_tile(game, player, x, y)
 
     for player in game["players"]:
-        socketio.emit("moved", {"x": x, "y": y}, room=player)
+        socketio.emit("moved", game, room=player)
 
-socketio.run(app, host="https://62a552cb-c82f-44a4-bf1f-4913e5a23a9b-ide.cs50.xyz")
+socketio.run(app, debug=True)
